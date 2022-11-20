@@ -135,22 +135,39 @@ module "ec2-large-0" {
   instance_ami       = "ami-08c40ec9ead489470" # Ubuntu 22.04 free tier
   instance_zone      = "us-east-1a"
   instance_subnet_id = module.subnet.subnet_id
-  security_group_ids = [module.sg-web.security_group_id]
+  security_group_ids = [module.sg-mysql.security_group_id]
 }
 
-module "ec2-medium-1" {
+module "ec2-weak-1" {
   source = "./ec2-module"
 
-  instance_name      = "TF EC2 Medium 1"
+  instance_name      = "TF EC2 Weak 1"
+  instance_type      = "t3.micro"
+  instance_ami       = "ami-08c40ec9ead489470" # Ubuntu 22.04 free tier
+  instance_zone      = "us-east-1a"
+  instance_subnet_id = module.subnet.subnet_id
+  security_group_ids = [module.sg-postgres.security_group_id]
+}
+
+module "ec2-medium-2" {
+  source = "./ec2-module"
+
+  instance_name      = "TF EC2 Medium 2"
   instance_type      = "t3.medium"
   instance_ami       = "ami-08c40ec9ead489470" # Ubuntu 22.04 free tier
   instance_zone      = "us-east-1a"
   instance_subnet_id = module.subnet.subnet_id
-  security_group_ids = [module.sg-mysql.security_group_id]
+  security_group_ids = [module.sg-web.security_group_id]
 }
 
 module "user-0" {
   source = "./user-module"
 
   user_name = "fernando"
+}
+
+module "user-1" {
+  source = "./user-module"
+
+  user_name = "francisco"
 }

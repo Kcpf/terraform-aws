@@ -53,7 +53,7 @@ username_question = {
 }
 
 delete_module_question = {
-    "type": "input",
+    "type": "checkbox",
     "name": "module",
-    "message": "Which module do you want to delete?",
+    "message": "Which modules do you want to delete?",
 }

@@ -144,8 +144,21 @@ def list_modules():
 
 
 def delete_module():
+    with open("terraform.tfstate", "r") as f:
+        data = json.load(f)
+
+    delete_module_question["choices"] = [
+        {"name": resource["module"]} for resource in data["resources"]
+    ]
+
+    if len(delete_module_question["choices"]) == 0:
+        print("No modules to delete")
+        return
+
     answer = prompt(delete_module_question)
-    os.system(f"terraform destroy -target {answer['module']} -auto-approve")
+
+    for module in answer["module"]:
+        os.system(f"terraform destroy -target {module} -auto-approve")
 
 
 def delete_project():
