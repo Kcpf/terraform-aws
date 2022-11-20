@@ -1,15 +1,11 @@
 resource "aws_instance" "this" {
-  for_each = var.instances_config
-
-  ami           = lookup(each.value, "ami", null)
-  instance_type = lookup(each.value, "type", null)
-  vpc_security_group_ids = [
-    aws_security_group.web.id
-  ]
-  subnet_id         = var.subnet_id
-  availability_zone = lookup(each.value, "availability_zone", null)
+  ami                    = var.instance_ami
+  instance_type          = var.instance_type
+  vpc_security_group_ids = var.security_group_ids
+  subnet_id              = var.instance_subnet_id
+  availability_zone      = var.instance_zone
 
   tags = {
-    Name = "Terraform: ${lookup(each.value, "name", null)}"
+    Name = var.instance_name
   }
 }

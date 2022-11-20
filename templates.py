@@ -1,4 +1,6 @@
-terraform {
+from string import Template
+
+terraform_default_config = """terraform {
   required_version = "1.3.4"
 
   required_providers {
@@ -8,11 +10,18 @@ terraform {
     }
   }
 }
+"""
 
+aws_provider = Template(
+    """
 provider "aws" {
-  region = "us-east-1"
+  region = "$region"
 }
+"""
+)
 
+vpc_subnet = Template(
+    """
 module "vpc" {
   source = "./vpc-module"
 
@@ -28,7 +37,11 @@ module "subnet" {
   subnet_cidr_block = "192.168.1.0/24"
   subnet_zone       = "us-east-1a"
 }
+"""
+)
 
+security_group_mysql = Template(
+    """
 module "sg-mysql" {
   source = "./sg-module"
 
@@ -57,7 +70,11 @@ module "sg-rule-mysql-2" {
   security_group_rule_protocol    = "-1"
   security_group_rule_cidr_blocks = ["0.0.0.0/0"]
 }
+"""
+)
 
+security_group_postgres = Template(
+    """
 module "sg-postgres" {
   source = "./sg-module"
 
@@ -86,7 +103,11 @@ module "sg-rule-postgres-2" {
   security_group_rule_protocol    = "-1"
   security_group_rule_cidr_blocks = ["0.0.0.0/0"]
 }
+"""
+)
 
+security_group_web = Template(
+    """
 module "sg-web" {
   source = "./sg-module"
 
@@ -126,31 +147,75 @@ module "sg-rule-web-3" {
   security_group_rule_protocol    = "-1"
   security_group_rule_cidr_blocks = ["0.0.0.0/0"]
 }
+"""
+)
 
-module "ec2-large-0" {
+ec2_weak = Template(
+    """
+module "ec2-weak-$number" {
   source = "./ec2-module"
 
-  instance_name      = "TF EC2 Large 0"
-  instance_type      = "t3.large"
+  instance_name      = "TF EC2 Weak $number"
+  instance_type      = "t3.micro"
   instance_ami       = "ami-08c40ec9ead489470" # Ubuntu 22.04 free tier
   instance_zone      = "us-east-1a"
   instance_subnet_id = module.subnet.subnet_id
-  security_group_ids = [module.sg-web.security_group_id]
+  security_group_ids = [$security_group_id]
 }
+"""
+)
 
-module "ec2-medium-1" {
+ec2_medium = Template(
+    """
+module "ec2-medium-$number" {
   source = "./ec2-module"
 
-  instance_name      = "TF EC2 Medium 1"
+  instance_name      = "TF EC2 Medium $number"
   instance_type      = "t3.medium"
   instance_ami       = "ami-08c40ec9ead489470" # Ubuntu 22.04 free tier
   instance_zone      = "us-east-1a"
   instance_subnet_id = module.subnet.subnet_id
-  security_group_ids = [module.sg-mysql.security_group_id]
+  security_group_ids = [$security_group_id]
 }
+"""
+)
 
-module "user-0" {
+ec2_large = Template(
+    """
+module "ec2-large-$number" {
+  source = "./ec2-module"
+
+  instance_name      = "TF EC2 Large $number"
+  instance_type      = "t3.large"
+  instance_ami       = "ami-08c40ec9ead489470" # Ubuntu 22.04 free tier
+  instance_zone      = "us-east-1a"
+  instance_subnet_id = module.subnet.subnet_id
+  security_group_ids = [$security_group_id]
+}
+"""
+)
+
+ec2_monster = Template(
+    """
+module "ec2-monster-$number" {
+  source = "./ec2-module"
+
+  instance_name      = "TF EC2 Monster $number"
+  instance_type      = "t3.xlarge"
+  instance_ami       = "ami-08c40ec9ead489470" # Ubuntu 22.04 free tier
+  instance_zone      = "us-east-1a"
+  instance_subnet_id = module.subnet.subnet_id
+  security_group_ids = [$security_group_id]
+}
+"""
+)
+
+user = Template(
+    """
+module "user-$number" {
   source = "./user-module"
 
-  user_name = "fernando"
+  user_name = "$username"
 }
+"""
+)

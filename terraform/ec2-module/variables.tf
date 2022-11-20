@@ -1,19 +1,29 @@
-variable "instances_config" {
-  type = map(object({
-    name              = string
-    type              = string
-    ami               = string
-    availability_zone = string
-  }))
-  description = "Instances Names, Types and AMI to create"
+variable "instance_name" {
+  type        = string
+  description = "Instance Name"
 }
 
-variable "vpc_id" {
+variable "instance_type" {
   type        = string
-  description = "VPC ID to create security group in"
+  description = "Instance Type"
 }
 
-variable "subnet_id" {
+variable "instance_ami" {
   type        = string
-  description = "Subnet ID to create instances in"
+  description = "Instance AMI"
+}
+
+variable "instance_zone" {
+  type        = string
+  description = "Instance Zone"
+}
+
+variable "instance_subnet_id" {
+  type        = string
+  description = "Subnet ID to create instance in"
+}
+
+variable "security_group_ids" {
+  type        = list(string)
+  description = "Security Group IDs to attach to instance"
 }

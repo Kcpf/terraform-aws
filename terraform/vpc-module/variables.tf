@@ -1,5 +1,9 @@
-variable "aws_region" {
+variable "vpc_name" {
   type        = string
-  description = ""
-  default     = "us-east-1"
+  description = "VPC Name"
+}
+
+variable "vpc_cidr_block" {
+  type        = string
+  description = "VPC CIDR Block"
 }

@@ -1,5 +1,5 @@
-output "account_arns" {
-  value = { for k, v in aws_iam_user.accounts : k => v.arn }
+output "account_arn" {
+  value = aws_iam_user.this.arn
 }
 
 
